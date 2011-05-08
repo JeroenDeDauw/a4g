@@ -15,12 +15,9 @@ header {
   overflow: hidden;
 }
 
-header p {
-  height: 2em;	
+header img {
   margin: 0;
-  padding-top: 0.2em;
-  font-size: 40pt;
-  font-weight: bold;
+  padding: 1em 0 2em;
 }
 
 nav {
