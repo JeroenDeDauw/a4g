@@ -27,27 +27,38 @@
 	var gentCentreLonLat = new OpenLayers.LonLat(3.72, 51.05665);
 	gentCentreLonLat.transform( displayProjection, projection );
 	map.setCenter( gentCentreLonLat, 13 );
-	
-	setTimeout(function() {
-	$.getJSON(
-		'js/Data.js',
-		{
-			
-		},
-		function( data ) {
-			var first = true;
-			
-			for ( operator in data ) {
-				addHeatmapLayer( operator, first, data[operator].signal );
-				
-				if ( first ) {
-					first  = false;
+
+	if ( canUseLocalStorage() && localStorage.getItem( 'data' ) ) {
+		putDataOnMap( JSON.parse( localStorage.getItem( 'data' ) ) );
+	}
+	else {
+		setTimeout(function() {
+			$.getJSON(
+				'js/Data.js',
+				{},
+				function( data ) {
+					if ( canUseLocalStorage() ) {
+						localStorage.setItem( 'data', JSON.stringify( data ) )
+					}				
+					putDataOnMap( data );
 				}
-			}
+			);
+		}, 3000);	
+	}
+	
+	function putDataOnMap( data ) {
+		var first = true;
+		
+		for ( operator in data ) {
+			addHeatmapLayer( operator, first, data[operator].signal );
 			
-			var coordinates = data.coordinates;
+			if ( first ) {
+				first  = false;
+			}
 		}
-	); }, 1);
+		
+		var coordinates = data.coordinates;		
+	}
 	
 	function addHeatmapLayer( name, first, coordinates ) {
 		var heatMapOverlay = new Heatmap.Layer(name, {visibility: first});
@@ -69,5 +80,13 @@
 			// To also re-zoom: map.zoomToExtent(heatMapOverlay.getDataExtent());			
 		}
 	}
+	
+	function canUseLocalStorage() {
+		try {
+			return 'localStorage' in window && window['localStorage'] !== null;
+		} catch (e) {
+			return false;
+		}
+	}	
 	
 } ); })(jQuery);
