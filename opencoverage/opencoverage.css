@@ -4,15 +4,54 @@
 }
 
 header {
-  height: 8em;	
-  padding: 1em;
+  padding: 0 1em;
   color: white;
   background-color: #422;
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, rgb(86,43,43)), color-stop(1, rgb(198,89,48)));
+  background-image: -moz-linear-gradient( center bottom, rgb(86,43,43) 0%, rgb(198,89,48) 100%);
+  overflow: hidden;
 }
 
 header p {
+  height: 2em;	
+  margin: 0;
+  padding-top: 0.2em;
   font-size: 40pt;
   font-weight: bold;
+}
+
+nav {
+  padding: 0.5em 0 0.2em;
+}
+
+nav ul {
+  display: block;
+  margin: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin: 0.3em;
+  padding: 0.6em;
+  background-color: black;
+  /* Border-radius */  
+  border-top-left-radius: 0.6em;  
+  border-top-right-radius: 0.6em;  
+  -moz-border-radius-topleft: 0.6em;  
+  -moz-border-radius-topright: 0.6em;  
+  -webkit-border-top-left-radius: 0.6em;  
+  -webkit-border-top-right-radius: 0.6em;  
+  /* Shadow */
+  /* -moz-box-shadow: 0 0 0.5em #000;
+  -webkit-box-shadow: 0 0 0.5em #000;
+  box-shadow: 0 0 0.5em #000; */
+  /*Gradient */
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.13, rgb(0,0,0)), color-stop(1, rgb(32,32,32)));
+  background-image: -moz-linear-gradient( center bottom, rgb(5,5,5) 13%, rgb(189,189,189) 100%);
+}
+
+nav ul li a {
+  text-decoration: none;
 }
 
 #map {
