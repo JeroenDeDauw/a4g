@@ -1,0 +1,23 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  height: 8em;	
+  padding: 1em;
+  color: white;
+  background-color: #422;
+}
+
+header p {
+  font-size: 40pt;
+  font-weight: bold;
+}
+
+#map {
+  background-color: #333;
+  height: 500px;
+}
+
+
