@@ -29,9 +29,28 @@
 	map.setCenter( gentCentreLonLat, 13 );
 
 	if ( canUseLocalStorage() && localStorage.getItem( 'data' ) ) {
-		putDataOnMap( JSON.parse( localStorage.getItem( 'data' ) ) );
+		var data = JSON.parse( localStorage.getItem( 'data' ) );
+		putDataOnMap( data );
+		checkDataValidity( data );
 	}
 	else {
+		obtainDataFromServer( putDataOnMap );
+	}
+	
+	function checkDataValidity( data ) {
+		$.getJSON(
+			'js/Data.js', // TODO: just get hash
+			{},
+			function( response ) {
+				if ( /* response.hash == somehash */ true ) {
+					// TODO: some actual redraw
+					obtainDataFromServer( function() { /*alert( 'data refreshed' );*/ } );
+				}
+			}
+		);			
+	}
+	
+	function obtainDataFromServer( callback ) {
 		setTimeout(function() {
 			$.getJSON(
 				'js/Data.js',
@@ -39,11 +58,11 @@
 				function( data ) {
 					if ( canUseLocalStorage() ) {
 						localStorage.setItem( 'data', JSON.stringify( data ) )
-					}				
-					putDataOnMap( data );
+					}
+					callback( data );
 				}
 			);
-		}, 3000);	
+		}, 3000);
 	}
 	
 	function putDataOnMap( data ) {
