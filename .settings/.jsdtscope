@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="openlayers/lib/OpenLayers/Layer/WMS/|openlayers/lib/OpenLayers/Protocol/WFS/|openlayers/lib/OpenLayers/Format/Filter/|openlayers/lib/OpenLayers/Request/|openlayers/lib/Gears/|openlayers/lib/OpenLayers/Format/OWSContext/|openlayers/lib/OpenLayers/Marker/|openlayers/lib/OpenLayers/Control/|openlayers/lib/OpenLayers/Popup/|openlayers/lib/OpenLayers/Filter/|openlayers/lib/OpenLayers/Feature/|openlayers/lib/OpenLayers/Layer/|openlayers/lib/OpenLayers/Format/WFST/|openlayers/lib/OpenLayers/Format/SLD/|openlayers/lib/OpenLayers/Format/WMTSCapabilities/|openlayers/tests/|openlayers/tests/Format/CSWGetRecords/|openlayers/lib/OpenLayers/|openlayers/lib/OpenLayers/Format/WMC/|openlayers/lib/OpenLayers/Format/GML/|openlayers/lib/OpenLayers/Tile/|openlayers/lib/OpenLayers/Strategy/|openlayers/lib/OpenLayers/Format/CSWGetDomain/|openlayers/lib/|openlayers/lib/OpenLayers/Handler/|openlayers/lib/OpenLayers/BaseTypes/|openlayers/lib/OpenLayers/Geometry/|openlayers/lib/OpenLayers/Layer/Google/|openlayers/lib/OpenLayers/Format/CSWGetRecords/|openlayers/lib/OpenLayers/Format/ArcXML/|openlayers/lib/OpenLayers/Symbolizer/|openlayers/tests/Format/SOSCapabilities/|openlayers/examples/|openlayers/lib/OpenLayers/Protocol/SOS/|openlayers/lib/Rico/|openlayers/lib/OpenLayers/Lang/|openlayers/lib/OpenLayers/Protocol/|openlayers/tests/speed/|openlayers/tests/Format/CSWGetDomain/|openlayers/lib/OpenLayers/Format/OWSCommon/|openlayers/doc/devdocs/javascript/|openlayers/lib/OpenLayers/Renderer/|openlayers/lib/OpenLayers/Protocol/SQL/|openlayers/|openlayers/lib/OpenLayers/Format/|openlayers/lib/OpenLayers/Format/WMSDescribeLayer/|openlayers/lib/OpenLayers/Layer/Vector/|openlayers/lib/OpenLayers/Format/SOSCapabilities/|openlayers/tests/Format/GML/|openlayers/lib/OpenLayers/Tile/Image/|openlayers/doc/apidocs/javascript/|openlayers/tests/data/|openlayers/lib/OpenLayers/Layer/MapServer/|openlayers/lib/Firebug/|openlayers/lib/OpenLayers/Format/WMSCapabilities/|openlayers/lib/OpenLayers/Format/WFSCapabilities/" kind="src" path=""/>
+	<classpathentry excluding="lib/OpenLayers/Layer/WMS/|lib/OpenLayers/Protocol/WFS/|lib/OpenLayers/Format/Filter/|lib/OpenLayers/Request/|lib/Gears/|lib/OpenLayers/Format/OWSContext/|lib/OpenLayers/Marker/|lib/OpenLayers/Control/|lib/OpenLayers/Popup/|lib/OpenLayers/Filter/|lib/OpenLayers/Feature/|lib/OpenLayers/Layer/|lib/OpenLayers/Format/WFST/|lib/OpenLayers/Format/SLD/|lib/OpenLayers/Format/WMTSCapabilities/|tests/|tests/Format/CSWGetRecords/|lib/OpenLayers/|lib/OpenLayers/Format/WMC/|lib/OpenLayers/Format/GML/|lib/OpenLayers/Tile/|lib/OpenLayers/Strategy/|lib/OpenLayers/Format/CSWGetDomain/|lib/|lib/OpenLayers/Handler/|lib/OpenLayers/BaseTypes/|lib/OpenLayers/Geometry/|lib/OpenLayers/Layer/Google/|lib/OpenLayers/Format/CSWGetRecords/|lib/OpenLayers/Format/ArcXML/|lib/OpenLayers/Symbolizer/|tests/Format/SOSCapabilities/|examples/|lib/OpenLayers/Protocol/SOS/|lib/Rico/|lib/OpenLayers/Lang/|lib/OpenLayers/Protocol/|tests/speed/|tests/Format/CSWGetDomain/|lib/OpenLayers/Format/OWSCommon/|doc/devdocs/javascript/|lib/OpenLayers/Renderer/|lib/OpenLayers/Protocol/SQL/|lib/OpenLayers/Format/|lib/OpenLayers/Format/WMSDescribeLayer/|lib/OpenLayers/Layer/Vector/|lib/OpenLayers/Format/SOSCapabilities/|tests/Format/GML/|lib/OpenLayers/Tile/Image/|doc/apidocs/javascript/|tests/data/|lib/OpenLayers/Layer/MapServer/|lib/Firebug/|lib/OpenLayers/Format/WMSCapabilities/|lib/OpenLayers/Format/WFSCapabilities/" kind="src" path="openlayers"/>
+	<classpathentry kind="src" path="openlayers/doc/apidocs/javascript"/>
+	<classpathentry kind="src" path="openlayers/doc/devdocs/javascript"/>
+	<classpathentry kind="src" path="openlayers/examples"/>
+	<classpathentry excluding="OpenLayers/Layer/WMS/|OpenLayers/Protocol/WFS/|OpenLayers/Format/Filter/|OpenLayers/Request/|Gears/|OpenLayers/Format/OWSContext/|OpenLayers/Marker/|OpenLayers/Control/|OpenLayers/Popup/|OpenLayers/Filter/|OpenLayers/Feature/|OpenLayers/Layer/|OpenLayers/Format/WFST/|OpenLayers/Format/SLD/|OpenLayers/Format/WMTSCapabilities/|OpenLayers/|OpenLayers/Format/WMC/|OpenLayers/Format/GML/|OpenLayers/Tile/|OpenLayers/Strategy/|OpenLayers/Format/CSWGetDomain/|OpenLayers/Handler/|OpenLayers/BaseTypes/|OpenLayers/Geometry/|OpenLayers/Layer/Google/|OpenLayers/Format/CSWGetRecords/|OpenLayers/Format/ArcXML/|OpenLayers/Symbolizer/|OpenLayers/Protocol/SOS/|Rico/|OpenLayers/Lang/|OpenLayers/Protocol/|OpenLayers/Format/OWSCommon/|OpenLayers/Renderer/|OpenLayers/Protocol/SQL/|OpenLayers/Format/|OpenLayers/Format/WMSDescribeLayer/|OpenLayers/Layer/Vector/|OpenLayers/Format/SOSCapabilities/|OpenLayers/Tile/Image/|OpenLayers/Layer/MapServer/|Firebug/|OpenLayers/Format/WMSCapabilities/|OpenLayers/Format/WFSCapabilities/" kind="src" path="openlayers/lib"/>
+	<classpathentry kind="src" path="openlayers/lib/Firebug"/>
+	<classpathentry kind="src" path="openlayers/lib/Gears"/>
+	<classpathentry excluding="Layer/WMS/|Protocol/WFS/|Format/Filter/|Request/|Format/OWSContext/|Marker/|Control/|Popup/|Filter/|Feature/|Layer/|Format/WFST/|Format/SLD/|Format/WMTSCapabilities/|Format/WMC/|Format/GML/|Tile/|Strategy/|Format/CSWGetDomain/|Handler/|BaseTypes/|Geometry/|Layer/Google/|Format/CSWGetRecords/|Format/ArcXML/|Symbolizer/|Protocol/SOS/|Lang/|Protocol/|Format/OWSCommon/|Renderer/|Protocol/SQL/|Format/|Format/WMSDescribeLayer/|Layer/Vector/|Format/SOSCapabilities/|Tile/Image/|Layer/MapServer/|Format/WMSCapabilities/|Format/WFSCapabilities/" kind="src" path="openlayers/lib/OpenLayers"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/BaseTypes"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Control"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Feature"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Filter"/>
+	<classpathentry excluding="Filter/|OWSContext/|WFST/|SLD/|WMTSCapabilities/|WMC/|GML/|CSWGetDomain/|CSWGetRecords/|ArcXML/|OWSCommon/|WMSDescribeLayer/|SOSCapabilities/|WMSCapabilities/|WFSCapabilities/" kind="src" path="openlayers/lib/OpenLayers/Format"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/ArcXML"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/CSWGetDomain"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/CSWGetRecords"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/Filter"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/GML"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/OWSCommon"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/OWSContext"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/SLD"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/SOSCapabilities"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/WFSCapabilities"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/WFST"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/WMC"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/WMSCapabilities"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/WMSDescribeLayer"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Format/WMTSCapabilities"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Geometry"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Handler"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Lang"/>
+	<classpathentry excluding="WMS/|Google/|Vector/|MapServer/" kind="src" path="openlayers/lib/OpenLayers/Layer"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Layer/Google"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Layer/MapServer"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Layer/Vector"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Layer/WMS"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Marker"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Popup"/>
+	<classpathentry excluding="WFS/|SOS/|SQL/" kind="src" path="openlayers/lib/OpenLayers/Protocol"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Protocol/SOS"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Protocol/SQL"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Protocol/WFS"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Renderer"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Request"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Strategy"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Symbolizer"/>
+	<classpathentry excluding="Image/" kind="src" path="openlayers/lib/OpenLayers/Tile"/>
+	<classpathentry kind="src" path="openlayers/lib/OpenLayers/Tile/Image"/>
+	<classpathentry kind="src" path="openlayers/lib/Rico"/>
+	<classpathentry excluding="Format/CSWGetRecords/|Format/SOSCapabilities/|speed/|Format/CSWGetDomain/|Format/GML/|data/" kind="src" path="openlayers/tests"/>
+	<classpathentry kind="src" path="openlayers/tests/data"/>
+	<classpathentry kind="src" path="openlayers/tests/Format/CSWGetDomain"/>
+	<classpathentry kind="src" path="openlayers/tests/Format/CSWGetRecords"/>
+	<classpathentry kind="src" path="openlayers/tests/Format/GML"/>
+	<classpathentry kind="src" path="openlayers/tests/Format/SOSCapabilities"/>
+	<classpathentry kind="src" path="openlayers/tests/speed"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
