@@ -1,4 +1,3 @@
- 
 $().ready(function() {
 	var projection = new OpenLayers.Projection("EPSG:900913");
 	var displayProjection = new OpenLayers.Projection("EPSG:4326");
@@ -11,8 +10,9 @@ $().ready(function() {
 	        new OpenLayers.Control.MousePosition(),
 	    ],
 	    projection: projection,
-	    displayProjection: displayProjection
+	    displayProjection: displayProjection,
 	});
+
 	
 	var heatMapOverlay = new Heatmap.Layer("Heatmap");
 	
