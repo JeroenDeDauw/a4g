@@ -1,5 +1,5 @@
  
-function init() {
+$().ready(function() {
 	var projection = new OpenLayers.Projection("EPSG:900913");
 	var displayProjection = new OpenLayers.Projection("EPSG:4326");
 	
@@ -35,4 +35,4 @@ function init() {
 	
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.zoomToExtent(heatMapOverlay.getDataExtent());
-}
+});
