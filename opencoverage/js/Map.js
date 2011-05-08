@@ -1,4 +1,5 @@
-$().ready(function() {
+(function($) { $( document ).ready( function() {
+	
 	var projection = new OpenLayers.Projection("EPSG:900913");
 	var displayProjection = new OpenLayers.Projection("EPSG:4326");
 	
@@ -14,25 +15,78 @@ $().ready(function() {
 	});
 
 	
-	var heatMapOverlay = new Heatmap.Layer("Heatmap");
-	
-	for (var latlng in coordinates) {
-		var lonLat = new OpenLayers.LonLat(coordinates[latlng][1], coordinates[latlng][0]);
-		lonLat.transform( displayProjection, projection );
-		heatMapOverlay.addSource( new Heatmap.Source( lonLat ) );
-	}
-	
-	heatMapOverlay.defaultIntensity = 0.1;
-	heatMapOverlay.setOpacity(0.33);
-	
 	map.addLayers([
 		new OpenLayers.Layer.OSM.Mapnik("OSM Mapnik"),
 		new OpenLayers.Layer.OSM.Osmarender("OSM arender"),
-		new OpenLayers.Layer.OSM.CycleMap("OSM Cycle Map"),
+		new OpenLayers.Layer.OSM.CycleMap("OSM Cycle Map")
 		//new OpenLayers.Layer.WMS("OpenLayers WMS", "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}),
-		heatMapOverlay
 	]);
 	
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	map.zoomToExtent(heatMapOverlay.getDataExtent());
-});
+
+	var gentCentreLonLat = new OpenLayers.LonLat(3.72, 51.05665);
+	gentCentreLonLat.transform( displayProjection, projection );
+	map.setCenter( gentCentreLonLat, 13 );
+
+	if ( canUseLocalStorage() && localStorage.getItem( 'data' ) ) {
+		putDataOnMap( JSON.parse( localStorage.getItem( 'data' ) ) );
+	}
+	else {
+		setTimeout(function() {
+			$.getJSON(
+				'js/Data.js',
+				{},
+				function( data ) {
+					if ( canUseLocalStorage() ) {
+						localStorage.setItem( 'data', JSON.stringify( data ) )
+					}				
+					putDataOnMap( data );
+				}
+			);
+		}, 3000);	
+	}
+	
+	function putDataOnMap( data ) {
+		var first = true;
+		
+		for ( operator in data ) {
+			addHeatmapLayer( operator, first, data[operator].signal );
+			
+			if ( first ) {
+				first  = false;
+			}
+		}
+		
+		var coordinates = data.coordinates;		
+	}
+	
+	function addHeatmapLayer( name, first, coordinates ) {
+		var heatMapOverlay = new Heatmap.Layer(name, {visibility: first});
+		
+		heatMapOverlay.defaultIntensity = 0.1;
+		heatMapOverlay.setOpacity(0.33);
+		
+		map.addLayers([ heatMapOverlay ]);
+		
+		for (var latlng in coordinates ) {
+			var coord = coordinates[latlng];
+			var lonLat = new OpenLayers.LonLat(coord.lon, coord.lat);
+			lonLat.transform( displayProjection, projection );
+			heatMapOverlay.addSource( new Heatmap.Source( lonLat, null, coord.value ) );
+		}
+		
+		if ( first ) {
+			map.panTo(heatMapOverlay.getDataExtent().getCenterLonLat());
+			// To also re-zoom: map.zoomToExtent(heatMapOverlay.getDataExtent());			
+		}
+	}
+	
+	function canUseLocalStorage() {
+		try {
+			return 'localStorage' in window && window['localStorage'] !== null;
+		} catch (e) {
+			return false;
+		}
+	}	
+	
+} ); })(jQuery);
