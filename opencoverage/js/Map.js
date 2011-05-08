@@ -70,6 +70,7 @@
 		
 		for ( operator in data ) {
 			addHeatmapLayer( operator, first, data[operator].signal );
+			addMastLayer( operator,data[operator].masts );
 			
 			if ( first ) {
 				first  = false;
@@ -98,6 +99,48 @@
 			map.panTo(heatMapOverlay.getDataExtent().getCenterLonLat());
 			// To also re-zoom: map.zoomToExtent(heatMapOverlay.getDataExtent());			
 		}
+	}
+	
+	function addMastLayer( name, masts ) {
+		var styleMap = new OpenLayers.StyleMap({
+            "default": new OpenLayers.Style({
+                pointRadius: "${type}", // sized according to type attribute
+                fillColor: "#ffcc66",
+                strokeColor: "#ff9933",
+                strokeWidth: 2,
+                graphicZIndex: 1
+            }),
+            "select": new OpenLayers.Style({
+                fillColor: "#66ccff",
+                strokeColor: "#3399ff",
+                graphicZIndex: 2
+            })
+        });
+		
+        var mastLater = new OpenLayers.Layer.Vector(name + " masts", {
+            styleMap: styleMap,
+            rendererOptions: {zIndexing: true},
+        	visibility: false
+        });
+        
+        var mastFeatures = [];
+        
+        for (i in masts) {
+			var lonLat = new OpenLayers.LonLat(masts[i].lon, masts[i].lat);
+			lonLat.transform( displayProjection, projection );
+			
+        	mastFeatures.push( new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(
+                		lonLat.lon, lonLat.lat
+                ), {
+                    type: 5 + parseInt(5 * Math.random())
+                }
+            ) );
+        }
+        
+        mastLater.addFeatures( mastFeatures );
+		
+		map.addLayers([ mastLater ]);
 	}
 	
 	function canUseLocalStorage() {
