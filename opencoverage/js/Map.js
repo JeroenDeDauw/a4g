@@ -1,4 +1,3 @@
- 
 (function($) { $( document ).ready( function() {
 	
 	var projection = new OpenLayers.Projection("EPSG:900913");
@@ -12,8 +11,9 @@
 	        new OpenLayers.Control.MousePosition(),
 	    ],
 	    projection: projection,
-	    displayProjection: displayProjection
+	    displayProjection: displayProjection,
 	});
+
 	
 	map.addLayers([
 		new OpenLayers.Layer.OSM.Mapnik("OSM Mapnik"),
