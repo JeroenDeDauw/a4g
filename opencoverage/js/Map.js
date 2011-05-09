@@ -129,6 +129,10 @@
 		}
 		
 		if ( first ) {
+			// Call the moveTo method with the current bounds to force an initial draw of the heatmap.
+			heatMapOverlay.moveTo( heatMapOverlay.getExtent(), false, false );
+			
+			// Pan to the centre of the heat-map.
 			map.panTo(heatMapOverlay.getDataExtent().getCenterLonLat());
 			// To also re-zoom: map.zoomToExtent(heatMapOverlay.getDataExtent());			
 		}
