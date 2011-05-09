@@ -1,8 +1,16 @@
+/**
+ * Map initialization code for Open Coverage.
+ *
+ * @licence GNU GPL v3+
+ * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ */
 (function($) { $( document ).ready( function() {
 	
+	// Define the projections here so they can be acessed by all the functions.
 	var projection = new OpenLayers.Projection("EPSG:900913");
 	var displayProjection = new OpenLayers.Projection("EPSG:4326");
 	
+	// Create the OpenLayers map object.
 	var map = new OpenLayers.Map('map', {
 	    controls: [
 	        new OpenLayers.Control.Navigation(),
@@ -13,8 +21,8 @@
 	    projection: projection,
 	    displayProjection: displayProjection,
 	});
-
 	
+	// Add the OpenStreetMap layers.
 	map.addLayers([
 		new OpenLayers.Layer.OSM.Mapnik("OSM Mapnik"),
 		new OpenLayers.Layer.OSM.Osmarender("OSM arender"),
@@ -22,12 +30,15 @@
 		//new OpenLayers.Layer.WMS("OpenLayers WMS", "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}),
 	]);
 	
+	// Add a new layer switcher control. Not doing this will result in the layer order being reversed.
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 
+	// Set the map centre and zoom to hardcoded values for the city of Gent.
 	var gentCentreLonLat = new OpenLayers.LonLat(3.72, 51.05665);
 	gentCentreLonLat.transform( displayProjection, projection );
 	map.setCenter( gentCentreLonLat, 13 );
 
+	// Load the data (using local storage if possible) and visualize it on the map.
 	if ( canUseLocalStorage() && localStorage.getItem( 'data' ) ) {
 		var data = JSON.parse( localStorage.getItem( 'data' ) );
 		putDataOnMap( data );
@@ -37,6 +48,12 @@
 		obtainDataFromServer( putDataOnMap );
 	}
 	
+	/**
+	 * Checks with the server if the local data is still valid.
+	 * If this is not the case, new data wil be requested.
+	 * 
+	 * @param {object} data
+	 */
 	function checkDataValidity( data ) {
 		$.getJSON(
 			'js/Data.js', // TODO: just get hash
@@ -50,6 +67,12 @@
 		);			
 	}
 	
+	/**
+	 * Obtains the data from the server and passes it to the callback function.
+	 * When local storage is available, it'll also be stored.  
+	 * 
+	 * @param callback
+	 */
 	function obtainDataFromServer( callback ) {
 		setTimeout(function() {
 			$.getJSON(
@@ -62,9 +85,14 @@
 					callback( data );
 				}
 			);
-		}, 3000);
+		}, 3000); // Simulate a delay for testing purpouses. TODO 
 	}
 	
+	/**
+	 * Visualizes the data on the map.
+	 * 
+	 * @param {object} data
+	 */
 	function putDataOnMap( data ) {
 		var first = true;
 		
@@ -76,10 +104,15 @@
 				first  = false;
 			}
 		}
-		
-		var coordinates = data.coordinates;		
 	}
 	
+	/**
+	 * Adds a heatmap layer to the map.
+	 * 
+	 * @param {string} name
+	 * @param {boolean} first When true, the overlay will be enabled on load, and the map will re-pan to it's centre. 
+	 * @param {array} coordinates
+	 */
 	function addHeatmapLayer( name, first, coordinates ) {
 		var heatMapOverlay = new Heatmap.Layer(name, {visibility: first});
 		
@@ -101,6 +134,12 @@
 		}
 	}
 	
+	/**
+	 * Adds a layey with masts.
+	 * 
+	 * @param {string} name
+	 * @param {array} masts
+	 */
 	function addMastLayer( name, masts ) {
 		var styleMap = new OpenLayers.StyleMap({
             "default": new OpenLayers.Style({
@@ -143,6 +182,11 @@
 		map.addLayers([ mastLater ]);
 	}
 	
+	/**
+	 * Determines and returns wheter local storage is supported.
+	 * 
+	 * @returns boolean
+	 */
 	function canUseLocalStorage() {
 		try {
 			return 'localStorage' in window && window['localStorage'] !== null;
