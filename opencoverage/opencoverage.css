@@ -4,6 +4,7 @@
 }
 
 html, body {
+  font-family: sans-serif;
 }
 
 header {
@@ -13,6 +14,12 @@ header {
   background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, rgb(86,43,43)), color-stop(1, rgb(198,89,48)));
   background-image: -moz-linear-gradient( center bottom, rgb(86,43,43) 0%, rgb(198,89,48) 100%);
   overflow: hidden;
+
+  position: absolute;
+  height: 9em;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 header img {
@@ -22,6 +29,8 @@ header img {
 
 nav {
   padding: 0.5em 0 0.2em;
+  position: relative;
+  bottom: 0.8em;
 }
 
 nav ul {
@@ -41,20 +50,34 @@ nav ul li {
   -moz-border-radius-topright: 0.6em;  
   -webkit-border-top-left-radius: 0.6em;  
   -webkit-border-top-right-radius: 0.6em;  
-  /* Shadow */
-  /* -moz-box-shadow: 0 0 0.5em #000;
-  -webkit-box-shadow: 0 0 0.5em #000;
-  box-shadow: 0 0 0.5em #000; */
   /*Gradient */
-  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.13, rgb(0,0,0)), color-stop(1, rgb(32,32,32)));
-  background-image: -moz-linear-gradient( center bottom, rgb(5,5,5) 13%, rgb(189,189,189) 100%);
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.13, #333), color-stop(1, #505050));
+  background-image: -moz-linear-gradient( center bottom, #333 13%, #505050 100%);
 }
 
 nav ul li a {
   text-decoration: none;
+  color: #aaa;
+}
+
+nav ul li:hover,
+nav ul li.selected {
+  /*Gradient */
+  background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0.13, #000), color-stop(1, #333));
+  background-image: -moz-linear-gradient( center bottom, #000 13%, #333 100%);
+}
+
+nav ul li:hover a,
+nav ul li.selected a {
+  color: #fff;
 }
 
 #map {
+  position: absolute;
+  top: 9em;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: #333;
 }
 
