@@ -4,6 +4,14 @@
  * @licence GNU GPL v3+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
+OpenLayers.Feature.prototype.popupClass = OpenLayers.Class(
+	OpenLayers.Popup.FramedCloud,
+	{
+		'autoSize': true,
+		'minSize': new OpenLayers.Size( 200, 100 )
+	}
+);
+
 (function($) { $( document ).ready( function() {
 	
 	// Define the projections here so they can be acessed by all the functions.
@@ -46,6 +54,45 @@
 	}
 	else {
 		obtainDataFromServer( putDataOnMap );
+	}
+	
+	if ( canUseGeolocation() ) {
+		var markerLayer = new OpenLayers.Layer.Markers( 'Your location' );
+		markerLayer.id= 'markerLayer';
+		map.addLayer( markerLayer );		
+
+		function getMarkerForPosition( position ) {
+			console.log( position.coords.longitude + ", " + position.coords.latitude );
+			var location = new OpenLayers.LonLat( position.coords.longitude, position.coords.latitude );
+			location.transform( displayProjection, projection );			
+			
+			var marker = new OpenLayers.Marker( location );
+			
+			marker.events.register( 'mousedown', marker, function( evt ) {
+				var popup = new OpenLayers.Feature( markerLayer, location ).createPopup( true ); 
+				popup.setContentHTML( "<b>You are here</b><hr />Latitude: " + position.coords.latitude + "<br />Longitude: " + position.coords.longitude );
+				markerLayer.map.addPopup( popup );
+				OpenLayers.Event.stop( evt );
+			} );
+			
+			return marker;
+		}
+		
+		navigator.geolocation.getCurrentPosition( function( position ) {
+			markerLayer.addMarker( getMarkerForPosition( position ) );
+		}, function( error ){
+			console.log( "Something went wrong: ", error );
+		},
+		{
+			timeout: 5000,
+			maximumAge: 15 * 60000,
+			enableHighAccuracy: true
+		} );
+		
+		var positionTimer = navigator.geolocation.watchPosition( function( position ) {
+			markerLayer.clearMarkers();
+			markerLayer.addMarker( getMarkerForPosition( position ) );
+		} );
 	}
 	
 	/**
@@ -172,16 +219,16 @@
 			var lonLat = new OpenLayers.LonLat(masts[i].lon, masts[i].lat);
 			lonLat.transform( displayProjection, projection );
 			
-        	mastFeatures.push( new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.Point(
+			mastFeatures.push( new OpenLayers.Feature.Vector(
+			new OpenLayers.Geometry.Point(
                 		lonLat.lon, lonLat.lat
-                ), {
-                    type: 5 + parseInt(5 * Math.random())
-                }
-            ) );
-        }
+			 ), {
+				type: 5 + parseInt(5 * Math.random())
+			}
+		    ) );
+		}
         
-        mastLater.addFeatures( mastFeatures );
+		mastLater.addFeatures( mastFeatures );
 		
 		map.addLayers([ mastLater ]);
 	}
@@ -189,7 +236,7 @@
 	/**
 	 * Determines and returns wheter local storage is supported.
 	 * 
-	 * @returns boolean
+	 * @return boolean
 	 */
 	function canUseLocalStorage() {
 		try {
@@ -197,6 +244,13 @@
 		} catch (e) {
 			return false;
 		}
-	}	
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function canUseGeolocation() {
+		return typeof navigator != 'undefined' && navigator.geolocation;
+	}
 	
 } ); })(jQuery);
