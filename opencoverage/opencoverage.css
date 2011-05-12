@@ -14,7 +14,6 @@ header {
   background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, rgb(86,43,43)), color-stop(1, rgb(198,89,48)));
   background-image: -moz-linear-gradient( center bottom, rgb(86,43,43) 0%, rgb(198,89,48) 100%);
   overflow: hidden;
-
   position: absolute;
   height: 9em;
   top: 0;
@@ -81,3 +80,18 @@ nav ul li.selected a {
   background-color: #333;
 }
 
+#about {
+  padding: 10em 1em 1em;
+  color: black;
+}
+
+p {
+  margin: 1em 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+  border-bottom: 1px dotted;
+
+}
