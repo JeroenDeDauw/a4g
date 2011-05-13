@@ -35,7 +35,7 @@ OpenLayers.Feature.prototype.popupClass = OpenLayers.Class(
 		new OpenLayers.Layer.OSM.Mapnik("OSM Mapnik"),
 		new OpenLayers.Layer.OSM.Osmarender("OSM arender"),
 		new OpenLayers.Layer.OSM.CycleMap("OSM Cycle Map")
-		//new OpenLayers.Layer.WMS("OpenLayers WMS", "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}),
+		//,new OpenLayers.Layer.WMS("OpenLayers WMS", "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}),
 	]);
 	
 	// Add a new layer switcher control. Not doing this will result in the layer order being reversed.
