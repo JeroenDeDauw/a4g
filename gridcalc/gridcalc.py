@@ -78,6 +78,26 @@ def get_grid_coord(lon, lat):
   glat = int(floor((lat - GRID_ORIG_LAT) / GRID_SIZE_LAT))
   return (glon, glat)
 
+def cell_for_grid_coord(gx, gy, lon, lat, az1, az2, powerdist, check = True):
+  meterperdegreehorz = d2m.getmetersperlon(lat)
+  meterperdegreevert = d2m.getmetersperlat(lat)
+  cellcoords = get_coord_grid(gx, gy)
+  dxant=cellcoords[0]-lon
+  dyant=cellcoords[1]-lat
+  distant=sqrt((dxant**2) + (dyant**2))
+  normx=dxant/distant
+  normy=dyant/distant
+  angle = atan2(normy, normx) % (2 * pi)
+  dist=sqrt(((dxant * meterperdegreehorz)**2) + ((dyant * meterperdegreevert)**2)) 
+  if check:
+    if dist > powerdist:
+      return
+    if (az1 <= az2) and ((angle < az1) or (angle > az2)):
+      return
+    if (az1 > az2) and (angle < az1) and (angle > az2):
+      return
+  return Cell(cellcoords[0], cellcoords[1], angle, dist)
+
 def gridcalc(lon, lat, azimuth, halfpower, beamwidth):
   """
   @param lon wgs84 decimal longitude
@@ -142,31 +162,27 @@ def gridcalc(lon, lat, azimuth, halfpower, beamwidth):
   # calc overlapping grid points
   gmin = get_grid_coord(bb.min_lon, bb.min_lat)
   gmax = get_grid_coord(bb.max_lon, bb.max_lat)
+  antenna = get_grid_coord(lon, lat)
 
   cells = []
+  if (antenna[0] < gmin[0]) or (antenna[0] > gmax[0]) or (antenna[1] < gmin[1]) or (antenna[1] > gmax[1]):
+    cell = cell_for_grid_coord(antenna[0], antenna[1], lon, lat, az1, az2, halfpower, check=False)
+    cells.append(cell)
+
   for gx in range(gmin[0], gmax[0] + 1):
     for gy in range(gmin[1], gmax[1] + 1):
-      cellcoords = get_coord_grid(gx, gy)
-      dxant=cellcoords[0]-lon
-      dyant=cellcoords[1]-lat
-      distant=sqrt((dxant**2) + (dyant**2))
-      normx=dxant/distant
-      normy=dyant/distant
-      angle = atan2(normy, normx) % (2 * pi)
-      dist=sqrt(((dxant * meterperdegreehorz)**2) + ((dyant * meterperdegreevert)**2)) 
-      if dist > halfpower:
-        continue
-      if (az1 <= az2) and ((angle < az1) or (angle > az2)):
-        continue
-      if (az1 > az2) and (angle < az1) and (angle > az2):
-        continue
-      cells.append(Cell(cellcoords[0], cellcoords[1], angle, dist))
+      cell = cell_for_grid_coord(gx, gy, lon, lat, az1, az2, halfpower)
+      if cell is None:
+        continue;
+      cells.append(cell)
   return cells
 
 d2m = DegreesToMeter("lonlat2meters.json")
 def main(): 
-  print gridcalc(3.4567891234, 50.4567891234, -45, 20, 90)
-
+  num = 0
+  for i in range(100):
+    num += len(gridcalc(3.7777777777, 50.4567891234, -45, 20, 90))
+  print num
 
 if __name__ == "__main__":
   main()
