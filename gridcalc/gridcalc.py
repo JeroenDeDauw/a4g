@@ -1,15 +1,33 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 
-from math import sin, cos, pi, floor
+from math import sin, cos, pi, trunc, modf, floor, sqrt, atan2
+from json import load
 
-GRID_SIZE_LON=0.0000001
-GRID_SIZE_LAT=0.0000001
-
-GRID_SIZE_LON=0.1
-GRID_SIZE_LAT=0.1
+GRID_SIZE_LON=0.0001
+GRID_SIZE_LAT=0.0001
 
 GRID_ORIG_LON=0
 GRID_ORIG_LAT=0
+
+class DegreesToMeter(object):
+
+  def __init__(self, filename):
+    f = open(filename)
+    self.data = load(f)
+    f.close()
+
+  def getmetersperlat(self, lat):
+    fractional, integral = modf(lat)
+    key = "%dd%dm" % (integral, int(abs(fractional)*6)*10)
+    value = self.data[key]
+    return value["minutelatinmeters"] * 60
+
+  def getmetersperlon(self, lat):
+    fractional, integral = modf(lat)
+    key = "%dd%dm" % (integral, int(abs(fractional)*6)*10)
+    value = self.data[key]
+    return value["minuteloninmeters"] * 60
 
 class BoundingBox(object):
   
@@ -70,11 +88,11 @@ def gridcalc(lon, lat, azimuth, halfpower, beamwidth):
   """
 
   pi2 = pi / 2
-  degreepermeterhorz = 1 #how to do this correctly
-  degreepermetervert = 1 #how to do this correctly
+  meterperdegreehorz = d2m.getmetersperlon(lat)
+  meterperdegreevert = d2m.getmetersperlat(lat)
 
-  wlon = halfpower * degreepermeterhorz
-  wlat = halfpower * degreepermetervert 
+  wlon = halfpower / meterperdegreehorz
+  wlat = halfpower / meterperdegreevert
 
   az = ((azimuth * pi) / 180) + pi2
   bw = (beamwidth * pi) / 180
@@ -126,27 +144,28 @@ def gridcalc(lon, lat, azimuth, halfpower, beamwidth):
   gmax = get_grid_coord(bb.max_lon, bb.max_lat)
 
   cells = []
-  for gx in range(gmin[0], gmax[0]):
-    for gy in range(gmin[1], gmax[1]):
+  for gx in range(gmin[0], gmax[0] + 1):
+    for gy in range(gmin[1], gmax[1] + 1):
       cellcoords = get_coord_grid(gx, gy)
-      dxant=cellcoord[0]-lon
-      dyant=cellcoord[1]-lat
+      dxant=cellcoords[0]-lon
+      dyant=cellcoords[1]-lat
       distant=sqrt((dxant**2) + (dyant**2))
       normx=dxant/distant
       normy=dyant/distant
       angle = atan2(normy, normx) % (2 * pi)
-      dist=sqrt(((dxanti * degreepermeterhorz)**2) + ((dyant * degreepermetervert)**2)) 
+      dist=sqrt(((dxant * meterperdegreehorz)**2) + ((dyant * meterperdegreevert)**2)) 
       if dist > halfpower:
         continue
       if (az1 <= az2) and ((angle < az1) or (angle > az2)):
         continue
       if (az1 > az2) and (angle < az1) and (angle > az2):
         continue
-      cells.append(Cell(cellcoord[0], cellcoord[1], angle, dist))
+      cells.append(Cell(cellcoords[0], cellcoords[1], angle, dist))
   return cells
 
+d2m = DegreesToMeter("lonlat2meters.json")
 def main(): 
-  gridcalc(3.4567891234, 50.4567891234, -45, 20, 90)
+  print gridcalc(3.4567891234, 50.4567891234, -45, 20, 90)
 
 
 if __name__ == "__main__":
