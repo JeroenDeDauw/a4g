@@ -10,19 +10,19 @@ Heatmap = {};
  */
 Heatmap.Source = OpenLayers.Class({
 
-  /** 
+  /**
    * APIProperty: lonlat
    * {OpenLayers.LonLat} location of the heat source
    */
   lonlat: null,
 
-  /** 
+  /**
    * APIProperty: radius
    * {Number} Heat source radius
    */
   radius: null,
 
-  /** 
+  /**
    * APIProperty: intensity
    * {Number} Heat source intensity
    */
@@ -37,10 +37,9 @@ Heatmap.Source = OpenLayers.Class({
    * radius - {Number} Optional radius
    * intensity - {Number} Optional intensity
    */
-  initialize: function(lonlat, radius, intensity) {
+  initialize: function(lonlat, radius, dbm) {
     this.lonlat = lonlat;
-    this.radius = radius;
-    this.intensity = intensity;
+    this.dbm = dbm;
   },
 
   CLASS_NAME: 'Heatmap.Source'
@@ -48,49 +47,49 @@ Heatmap.Source = OpenLayers.Class({
 
 /**
  * Class: Heatmap.Layer
- * 
+ *
  * Inherits from:
  *  - <OpenLayers.Layer>
  */
 Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
 
-  /** 
-   * APIProperty: isBaseLayer 
-   * {Boolean} Heatmap layer is never a base layer.  
+  /**
+   * APIProperty: isBaseLayer
+   * {Boolean} Heatmap layer is never a base layer.
    */
   isBaseLayer: false,
 
-  /** 
+  /**
    * Property: points
    * {Array(<Heatmap.Source>)} internal coordinate list
    */
   points: null,
 
-  /** 
+  /**
    * Property: cache
    * {Object} Hashtable with CanvasGradient objects
    */
   cache: null,
 
-  /** 
+  /**
    * Property: gradient
    * {Array(Number)} RGBA gradient map used to colorize the intensity map.
    */
   gradient: null,
 
-  /** 
+  /**
    * Property: canvas
    * {DOMElement} Canvas element.
    */
   canvas: null,
 
-  /** 
+  /**
    * APIProperty: defaultRadius
    * {Number} Heat source default radius
    */
   defaultRadius: null,
 
-  /** 
+  /**
    * APIProperty: defaultIntensity
    * {Number} Heat source default intensity
    */
@@ -112,21 +111,6 @@ Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
     this.canvas.style.position = 'absolute';
     this.defaultRadius = 20;
     this.defaultIntensity = 0.2;
-    this.setGradientStops({
-      0.00: 0xffffff00,
-      0.10: 0x99e9fdff,
-      0.20: 0x00c9fcff,
-      0.30: 0x00e9fdff,
-      0.30: 0x00a5fcff,
-      0.40: 0x0078f2ff,
-      0.50: 0x0e53e9ff,
-      0.60: 0x4a2cd9ff,
-      0.70: 0x890bbfff,
-      0.80: 0x99019aff,
-      0.90: 0x990664ff,
-      0.99: 0x660000ff,
-      1.00: 0x000000ff
-    });
 
     // For some reason OpenLayers.Layer.setOpacity assumes there is
     // an additional div between the layer's div and its contents.
@@ -136,41 +120,11 @@ Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
   },
 
   /**
-   * APIMethod: setGradientStops
-   * ...
-   *
-   * Parameters:
-   * stops - {Object} Hashtable with stop position as keys and colors
-   *                  as values. Stop positions are numbers between 0
-   *                  and 1, color values numbers in 0xRRGGBBAA form.
-   */
-  setGradientStops: function(stops) {
-
-    // There is no need to perform the linear interpolation manually,
-    // it is sufficient to let the canvas implementation do that.
-
-    var ctx = document.createElement('canvas').getContext('2d');
-    var grd = ctx.createLinearGradient(0, 0, 256, 0);
-
-    for (var i in stops) {
-      grd.addColorStop(i, 'rgba(' +
-        ((stops[i] >> 24) & 0xFF) + ',' +
-        ((stops[i] >> 16) & 0xFF) + ',' +
-        ((stops[i] >>  8) & 0xFF) + ',' +
-        ((stops[i] >>  0) & 0xFF) + ')');
-    }
-
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 256, 1);
-    this.gradient = ctx.getImageData(0, 0, 256, 1).data;
-  },
-
-  /**
    * APIMethod: addSource
    * Adds a heat source to the layer.
    *
    * Parameters:
-   * source - {<Heatmap.Source>} 
+   * source - {<Heatmap.Source>}
    */
   addSource: function(source) {
     this.points.push(source);
@@ -179,9 +133,9 @@ Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
   /**
    * APIMethod: removeSource
    * Removes a heat source from the layer.
-   * 
+   *
    * Parameters:
-   * source - {<Heatmap.Source>} 
+   * source - {<Heatmap.Source>}
    */
   removeSource: function(source) {
     if (this.points && this.points.length) {
@@ -189,16 +143,15 @@ Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
     }
   },
 
-  /** 
+  /**
    * Method: moveTo
    *
    * Parameters:
-   * bounds - {<OpenLayers.Bounds>} 
-   * zoomChanged - {Boolean} 
-   * dragging - {Boolean} 
+   * bounds - {<OpenLayers.Bounds>}
+   * zoomChanged - {Boolean}
+   * dragging - {Boolean}
    */
   moveTo: function(bounds, zoomChanged, dragging) {
-
     OpenLayers.Layer.prototype.moveTo.apply(this, arguments);
 
     // The code is too slow to update the rendering during dragging.
@@ -224,42 +177,22 @@ Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
     ctx.restore();
 
     for (var i in this.points) {
-
       var src = this.points[i];
-      var rad = src.radius || this.defaultRadius;
-      var int = src.intensity || this.defaultIntensity;
       var pos = this.map.getLayerPxFromLonLat(src.lonlat);
-      var x = pos.x - rad + offsetX;
-      var y = pos.y - rad + offsetY;
+      var x = pos.x + offsetX;
+      var y = pos.y + offsetY;
 
-      if (!this.cache[int]) {
-        this.cache[int] = {};
-      }
-
-      if (!this.cache[int][rad]) {
-        var grd = ctx.createRadialGradient(rad, rad, 0, rad, rad, rad);
-        grd.addColorStop(0.0, 'rgba(0, 0, 0, ' + int + ')');
-        grd.addColorStop(1.0, 'transparent');
-        this.cache[int][rad] = grd;
-      }
-
-      ctx.fillStyle = this.cache[int][rad];
+      red = 255 + src.dbm*2;
+      blue = -src.dbm*2;
+      ctx.fillStyle = 'rgba(' + red + ', 0, ' + blue + ', 1)';
       ctx.translate(x, y);
-      ctx.fillRect(0, 0, 2 * rad, 2 * rad);
+      ctx.fillRect(0, 0, 5, 5);
       ctx.translate(-x, -y);
     }
 
     var dat = ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     var dim = this.canvas.width * this.canvas.height * 4;
     var pix = dat.data;
-
-    for (var p = 0; p < dim; /* */) {
-      var a = pix[ p + 3 ] * 4;
-      pix[ p++ ] = this.gradient[ a++ ];
-      pix[ p++ ] = this.gradient[ a++ ];
-      pix[ p++ ] = this.gradient[ a++ ];
-      pix[ p++ ] = this.gradient[ a++ ];
-    }
 
     ctx.putImageData(dat, 0, 0);
 
@@ -271,16 +204,16 @@ Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
     this.canvas.style.top = (-offsetY) + 'px';
   },
 
-  /** 
+  /**
    * APIMethod: getDataExtent
    * Calculates the max extent which includes all of the heat sources.
-   * 
+   *
    * Returns:
    * {<OpenLayers.Bounds>}
    */
   getDataExtent: function () {
     var maxExtent = null;
-        
+
     if (this.points && (this.points.length > 0)) {
       var maxExtent = new OpenLayers.Bounds();
       for(var i = 0, len = this.points.length; i < len; ++i) {
