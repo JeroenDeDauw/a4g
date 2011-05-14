@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 
-import math
+from math import sin, cos, pi, floor
 
-GRIDSIZE_LON=0.0000001
-GRIDSIZE_LAT=0.0000001
+GRID_SIZE_LON=0.0000001
+GRID_SIZE_LAT=0.0000001
+
+GRID_SIZE_LON=0.1
+GRID_SIZE_LAT=0.1
+
+GRID_ORIG_LON=0
+GRID_ORIG_LAT=0
 
 class BoundingBox(object):
   
@@ -22,6 +28,37 @@ class BoundingBox(object):
   def __str__(self):
     return "min lon: %f, min lat: %f, max lon: %f, max lat: %f" % (self.min_lon, self.min_lat, self.max_lon, self.max_lat)
 
+class Cell(object):
+
+  def __init__(self, x, y, angle, dist):
+    self.x = x
+    self.y = y
+    self.angle = angle
+    self.dist = dist
+
+  def __str__(self):
+    return "{x: %s, y:%s, angle: %s, dist:%s}" % (self.x, self.y, self.angle, self.dist)
+
+def get_coord_grid(x, y):
+  """
+  Returns center coordinate of grid
+  @param x the x grid coordinate
+  @param y the y grid coordinate
+  @return tuple of lon lat wgs84 coords
+  """
+  glon = GRID_ORIG_LON + ((x + 0.5) * GRID_SIZE_LON)
+  glat = GRID_ORIG_LAT + ((y + 0.5) * GRID_SIZE_LAT)
+  return (glon, glat)
+
+def get_grid_coord(lon, lat):
+  """
+  @param lon wgs84 decimal longitude
+  @param lat wgs84 decimal latitude
+  @return the grid coord of where this coord is in
+  """
+  glon = int(floor((lon - GRID_ORIG_LON) / GRID_SIZE_LON))
+  glat = int(floor((lat - GRID_ORIG_LAT) / GRID_SIZE_LAT))
+  return (glon, glat)
 
 def gridcalc(lon, lat, azimuth, halfpower, beamwidth):
   """
@@ -32,17 +69,26 @@ def gridcalc(lon, lat, azimuth, halfpower, beamwidth):
   @beamwidth width of beam in degrees
   """
 
-  w = halfpower * 100 #how to do this correctly
+  pi2 = pi / 2
+  degreepermeterhorz = 1 #how to do this correctly
+  degreepermetervert = 1 #how to do this correctly
+
+  wlon = halfpower * degreepermeterhorz
+  wlat = halfpower * degreepermetervert 
+
+  az = ((azimuth * pi) / 180) + pi2
+  bw = (beamwidth * pi) / 180
+  bw2 = bw / 2
   
   # calc p1
-  az1 = (math.pi + math.pi * (azimuth - (beamwidth / 2)) / 180) % (2 * math.pi)
-  p1lon = math.cos(az1) * w
-  p1lat = math.sin(az1) * w
-
+  az1 = (az - bw2) % (2 * pi)
+  p1lon = lon + cos(az1) * wlon
+  p1lat = lat + sin(az1) * wlat
+  
   # calc p2
-  az2 = (math.pi + math.pi * (azimuth + (beamwidth / 2)) / 180) % (2 * math.pi)
-  p2lon = math.cos(az2) * w
-  p2lat = math.sin(az2) * w
+  az2 = (az + bw2) % (2 * pi)
+  p2lon = lon + cos(az2) * wlon
+  p2lat = lat + sin(az2) * wlat
 
   # calc bounding box not taking arc into account
   bb = BoundingBox()
@@ -50,33 +96,58 @@ def gridcalc(lon, lat, azimuth, halfpower, beamwidth):
   bb.include(p1lon, p1lat)
   bb.include(p2lon, p2lat)
 
-  # extend for arc
-  if az1 > az2:
-    #take 0 angle * length into account
-    bb.include(lon + w, lat)
-  if (az1 < math.pi) and (az2 > math.pi):
-    #take pi angle * length into account
-    bb.include(lon, lat + w)
-  if (az1 < 2*math.pi) and (az2 > 2*math.pi):
-    #take 2*pi angle * length into account
-    bb.include(lon - w, lat)
-  if (az1 < 3*math.pi) and (az2 > 3*math.pi):
-    #take 2*pi angle * length into account
-    bb.include(lon, lat - w)
-  if (az2 < math.pi) and (az1 > math.pi):
-    #take pi angle * length into account
-    bb.include(lon, lat + w)
-  if (az2 < 2*math.pi) and (az1 > 2*math.pi):
-    #take 2*pi angle * length into account
-    bb.include(lon - w, lat)
-  if (az2 < 3*math.pi) and (az1 > 3*math.pi):
-    #take 2*pi angle * length into account
-    bb.include(lon, lat - w)
+  # extend for arc (arc goes from p1 to p2)
+  if az1 <= az2:
+    # arc does not cross east
+    # cross north?
+    if az1 < pi2 and az2 > pi2:
+      bb.include(lon, lat + wlat)
+    # cross west?
+    if az1 < pi and az2 > pi:
+      bb.include(lon - wlon, lat)
+    # cross south?
+    if az1 < (pi + pi2) and az2 > (pi + pi2):
+      bb.include(lon, lat - wlat)
+  else:
+    # arc crosses east
+    bb.include(lon + wlon, lat)
+    # cross north?
+    if az1 < pi2 or az2 > pi2:
+      bb.include(lon, lat + wlat)
+    # cross west?
+    if az1 < pi or az2 > pi:
+      bb.include(lon - wlon, lat)
+    # cross south?
+    if az1 < (pi + pi2) or az2 > (pi + pi2):
+      bb.include(lon, lat - wlat)
 
-  print bb
- 
+  # calc overlapping grid points
+  gmin = get_grid_coord(bb.min_lon, bb.min_lat)
+  gmax = get_grid_coord(bb.max_lon, bb.max_lat)
+
+  cells = []
+  for gx in range(gmin[0], gmax[0]):
+    for gy in range(gmin[1], gmax[1]):
+      cellcoords = get_coord_grid(gx, gy)
+      dxant=cellcoord[0]-lon
+      dyant=cellcoord[1]-lat
+      distant=sqrt((dxant**2) + (dyant**2))
+      normx=dxant/distant
+      normy=dyant/distant
+      angle = atan2(normy, normx) % (2 * pi)
+      dist=sqrt(((dxanti * degreepermeterhorz)**2) + ((dyant * degreepermetervert)**2)) 
+      if dist > halfpower:
+        continue
+      if (az1 <= az2) and ((angle < az1) or (angle > az2)):
+        continue
+      if (az1 > az2) and (angle < az1) and (angle > az2):
+        continue
+      cells.append(Cell(cellcoord[0], cellcoord[1], angle, dist))
+  return cells
+
 def main(): 
-  gridcalc(1, 1, 90, 1, 45)
+  gridcalc(3.4567891234, 50.4567891234, -45, 20, 90)
+
 
 if __name__ == "__main__":
   main()
