@@ -47,58 +47,6 @@ OpenLayers.Feature.prototype.popupClass = OpenLayers.Class(
 	map.setCenter( gentCentreLonLat, 13 );
 
 	getdata(putDataOnMap);
-/*
-	// Load the data (using local storage if possible) and visualize it on the map.
-	if ( canUseLocalStorage() && localStorage.getItem( 'data' ) ) {
-		var data = JSON.parse( localStorage.getItem( 'data' ) );
-		putDataOnMap( data );
-		checkDataValidity( data );
-	}
-	else {
-		obtainDataFromServer( putDataOnMap );
-	}
-*/
-
-/*
-	if ( canUseGeolocation() ) {
-		var markerLayer = new OpenLayers.Layer.Markers( 'Your location' );
-		markerLayer.id= 'markerLayer';
-		map.addLayer( markerLayer );
-
-		function getMarkerForPosition( position ) {
-			console.log( position.coords.longitude + ", " + position.coords.latitude );
-			var location = new OpenLayers.LonLat( position.coords.longitude, position.coords.latitude );
-			location.transform( displayProjection, projection );
-
-			var marker = new OpenLayers.Marker( location );
-
-			marker.events.register( 'mousedown', marker, function( evt ) {
-				var popup = new OpenLayers.Feature( markerLayer, location ).createPopup( true );
-				popup.setContentHTML( "<b>You are here</b><hr />Latitude: " + position.coords.latitude + "<br />Longitude: " + position.coords.longitude );
-				markerLayer.map.addPopup( popup );
-				OpenLayers.Event.stop( evt );
-			} );
-
-			return marker;
-		}
-
-		navigator.geolocation.getCurrentPosition( function( position ) {
-			markerLayer.addMarker( getMarkerForPosition( position ) );
-		}, function( error ){
-			console.log( "Something went wrong: ", error );
-		},
-		{
-			timeout: 5000,
-			maximumAge: 15 * 60000,
-			enableHighAccuracy: true
-		} );
-
-		var positionTimer = navigator.geolocation.watchPosition( function( position ) {
-			markerLayer.clearMarkers();
-			markerLayer.addMarker( getMarkerForPosition( position ) );
-		} );
-	}
-*/
 
 	function getdata(callback) {
 		var mapcoord = map.getExtent()
@@ -106,10 +54,8 @@ OpenLayers.Feature.prototype.popupClass = OpenLayers.Class(
 		url += '?nwlon=' + mapcoord.left + '&nwlat=' + mapcoord.top;
 		url += '&selon=' + mapcoord.right + '&selat=' + mapcoord.bottom;
 		url = 'js/Data.js';
-		$.getJSON(url, {},
+		$.getJSON(url,
 			function( data ) {
-				console.log(11);
-				console.log(data);
 				if ( canUseLocalStorage() ) {
 					localStorage.setItem( 'data', JSON.stringify( data ) )
 				}
@@ -181,7 +127,7 @@ OpenLayers.Feature.prototype.popupClass = OpenLayers.Class(
 	 * @return boolean
 	 */
 	function canUseLocalStorage() {
-//		return false;
+		return false;
 		try {
 			return 'localStorage' in window && window['localStorage'] !== null;
 		} catch (e) {

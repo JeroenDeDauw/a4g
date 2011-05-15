@@ -186,7 +186,7 @@ Heatmap.Layer = OpenLayers.Class(OpenLayers.Layer, {
       blue = -src.dbm*2;
       ctx.fillStyle = 'rgba(' + red + ', 0, ' + blue + ', 1)';
       ctx.translate(x, y);
-      ctx.fillRect(0, 0, 5, 5);
+      ctx.fillRect(0, 0, 1, 1);
       ctx.translate(-x, -y);
     }
 
