@@ -115,7 +115,14 @@ OpenLayers.Feature.prototype.popupClass = OpenLayers.Class(
 				}
 				callback( data );
 			}
-		);
+		).success(function(x) { 
+			console.log("success getdata: " + x); 
+			console.log(x); 
+		}).error(function(x) { 
+			console.log("error getdata: " + x); 
+			console.log(x.responseText); 
+			console.log(x); 
+		});
 	}
 
 	function putDataOnMap( data ) {
